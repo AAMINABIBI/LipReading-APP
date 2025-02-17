@@ -35,7 +35,7 @@ const OnboardingScreen = () => {
   return (
     <View style={styles.container}>
       <Onboarding
-        showPagination={false} // Removes the dot indicator
+        showPagination={false}
         pages={[
           {
             backgroundColor: '#e0e3f4',
@@ -75,15 +75,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e3f4',
   },
   img: {
-    marginTop: -330,
-    borderRadius: 200,
+    // marginTop: -330,
+    borderRadius: 100,
     marginHorizontal: 10,
+    height: 100,
+    width: 100,
+    margin: 30,
   },
   title: {
     fontSize: 25,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom:10,
+    marginBottom: 10,
   },
   subtitle: {
     fontSize: 15,

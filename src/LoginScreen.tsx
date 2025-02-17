@@ -24,8 +24,8 @@ const LoginScreen = ({ navigation }) => {
 
       if (user) {
         await AsyncStorage.setItem('userToken', JSON.stringify({ email: user.email }));
-       navigation.navigate('Home');
-       //console.warn('login successful')
+        navigation.navigate('Home');
+        //console.warn('login successful')
       } else {
         Alert.alert("Error", "Invalid email or password.");
       }
@@ -42,11 +42,11 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Text style={styles.largeTitle}>Login</Text>
-      <Image source={require('../assets/simlyy-removebg.png')} style={styles.image} />
-      
+      {/* <Text style={styles.largeTitle}>Login</Text>
+    <Image source={require('../assets/simlyy-removebg.png')} style={styles.image} />
+       */}
       <View style={styles.content}>
-        <Text style={styles.title}>Enter Your Credential</Text>
+        <Text style={styles.title}>Login</Text>
 
         <TextInput
           style={styles.input}
@@ -70,7 +70,7 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.link}
           onPress={() => navigation.navigate('SignUp')}
         >
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     width: 200, // Adjust size
     height: 150, // Adjust size
     resizeMode: 'contain',
-   // marginBottom: 20,
+    // marginBottom: 20,
   },
   content: {
     backgroundColor: 'white',
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
+    fontSize: 20,
   },
   button: {
     backgroundColor: '#b297eb',
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   largeTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-   // marginBottom: 30,
+    // marginBottom: 30,
     color: '#333',
   },
 });
