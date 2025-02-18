@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Modal, Button, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Modal, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
-const HomeScreen = () => { // Remove the duplicate HomeScreen definition
+const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -11,8 +12,29 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
   const navigation = useNavigation();
 
   const handleButtonPress = (type) => {
-    setConversionType(type);
-    setModalVisible(true);
+    if (selectedVideo) {
+      Alert.alert(
+        "Video Already Selected",
+        "A video is already selected. Do you want to choose another?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          {
+            text: "Choose Another",
+            onPress: () => {
+              setSelectedVideo(null);
+              setConversionType(type);
+              setModalVisible(true);
+            }
+          }
+        ]
+      );
+    } else {
+      setConversionType(type);
+      setModalVisible(true);
+    }
   };
 
   const handleSelectFromGallery = async () => {
@@ -24,7 +46,7 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
       videoMaxDuration: 60,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setSelectedVideo(result.assets[0]);
       setModalVisible(false);
       uploadVideo(result.assets[0].uri);
@@ -37,14 +59,14 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
       videoMaxDuration: 60,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setSelectedVideo(result.assets[0]);
       setModalVisible(false);
       uploadVideo(result.assets[0].uri);
     }
   };
 
-  const uploadVideo = async (uri) => { // uri is the local file path
+  const uploadVideo = async (uri) => {
     setLoading(true);
     setTimeout(() => {
       console.log('Video uploaded:', uri);
@@ -53,9 +75,9 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
       if (conversionType === 'Video to Text') {
         navigation.navigate('VideoToTextOutput', { textOutput: 'This is the extracted text from the video.' });
       } else if (conversionType === 'Video to Audio') {
-        navigation.navigate('VideoToAudioOutput', { audioUrl: uri }); // Pass the actual local file URI
+        navigation.navigate('VideoToAudioOutput', { audioUrl: uri });
       } else if (conversionType === 'Video to Video') {
-        navigation.navigate('VideoToVideoOutput', { videoUrl: uri }); // Pass the actual local file URI
+        navigation.navigate('VideoToVideoOutput', { videoUrl: uri });
       }
     }, 2000);
   };
@@ -64,12 +86,15 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
     <View style={styles.container}>
       <Text style={styles.largeTitle}>Select Your Choice!</Text>
       <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Video to Text')}>
+        <Ionicons name="document-text-outline" size={24} color="white" style={styles.icon} />
         <Text style={styles.buttonText}>{'Video to Text'}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Video to Audio')}>
+        <Ionicons name="musical-notes-outline" size={24} color="white" style={styles.icon} />
         <Text style={styles.buttonText}>{'Video to Audio'}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Video to Video')}>
+        <Ionicons name="videocam-outline" size={24} color="white" style={styles.icon} />
         <Text style={styles.buttonText}>{'Video to Video'}</Text>
       </TouchableOpacity>
 
@@ -77,9 +102,18 @@ const HomeScreen = () => { // Remove the duplicate HomeScreen definition
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Select Video Source</Text>
-            <Button title="Gallery" onPress={handleSelectFromGallery} />
-            <Button title="Camera" onPress={handleSelectFromCamera} />
-            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            <TouchableOpacity style={styles.button} onPress={handleSelectFromGallery}>
+              <Ionicons name="image-outline" size={24} color="white" style={styles.icon} />
+              <Text style={styles.buttonText}>Gallery</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleSelectFromCamera}>
+              <Ionicons name="camera-outline" size={24} color="white" style={styles.icon} />
+              <Text style={styles.buttonText}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+              <Ionicons name="close-outline" size={24} color="white" style={styles.icon} />
+              <Text style={styles.buttonText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -113,11 +147,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     margin: 10,
+    flexDirection: 'row', // Add flexDirection to align icon and text
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
+    marginLeft: 8, // Add marginLeft for spacing between icon and text
   },
   largeTitle: {
     fontSize: 36,
@@ -154,6 +190,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
+  icon: {
+    marginRight: 5, // Add marginRight for spacing between icon and text
+  },
 });
 
-export default HomeScreen; 
+export default HomeScreen;

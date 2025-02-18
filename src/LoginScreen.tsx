@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Image, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -20,12 +21,11 @@ const LoginScreen = ({ navigation }) => {
     try {
       const storedUsers = await AsyncStorage.getItem('users');
       const users = storedUsers ? JSON.parse(storedUsers) : [];
-      const user = users.find((u: { email: string; password: string; }) => u.email === email && u.password === password);
+      const user = users.find((u) => u.email === email && u.password === password);
 
       if (user) {
         await AsyncStorage.setItem('userToken', JSON.stringify({ email: user.email }));
         navigation.navigate('Home');
-        //console.warn('login successful')
       } else {
         Alert.alert("Error", "Invalid email or password.");
       }
@@ -42,29 +42,33 @@ const LoginScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      {/* <Text style={styles.largeTitle}>Login</Text>
-    <Image source={require('../assets/simlyy-removebg.png')} style={styles.image} />
-       */}
       <View style={styles.content}>
         <Text style={styles.title}>Login</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#aaa"
-          onChangeText={setEmail}
-          value={email}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#aaa"
-          onChangeText={setPassword}
-          value={password}
-          secureTextEntry
-        />
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={24} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#aaa"
+            onChangeText={setEmail}
+            value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#aaa"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry
+          />
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
           <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Login'}</Text>
@@ -80,6 +84,7 @@ const LoginScreen = ({ navigation }) => {
     </KeyboardAvoidingView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -88,10 +93,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 200, // Adjust size
-    height: 150, // Adjust size
+    width: 200,
+    height: 150,
     resizeMode: 'contain',
-    // marginBottom: 20,
   },
   content: {
     backgroundColor: 'white',
@@ -108,14 +112,28 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
+    flex: 1, // Allow input to take remaining space
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 15,
+    paddingRight:15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    fontSize: 13,
+  },
+    inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     backgroundColor: '#f0f0f0',
-    padding: 15,
     marginBottom: 15,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
-    fontSize: 20,
+  },
+    icon: {
+    paddingLeft: 15,
+    paddingRight: 10,
   },
   button: {
     backgroundColor: '#b297eb',
@@ -139,8 +157,6 @@ const styles = StyleSheet.create({
   largeTitle: {
     fontSize: 36,
     fontWeight: 'bold',
-    // marginBottom: 30,
-    color: '#333',
   },
 });
 

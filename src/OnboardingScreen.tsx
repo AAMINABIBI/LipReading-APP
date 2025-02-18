@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'rea
 import React, { useState, useRef, useEffect } from 'react';
 import Onboarding from 'react-native-onboarding-swiper';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -13,13 +14,13 @@ const OnboardingScreen = () => {
 
   useEffect(() => {
     if (imageRef.current) {
-      imageRef.current.measure((x: any, y: any, width: React.SetStateAction<number>) => {
+      imageRef.current.measure((x, y, width) => {
         setContainerWidth(width);
       });
     }
   }, []);
 
-  const handleImageLoad = (event: { nativeEvent: { source: { width: any; height: any; }; }; }) => {
+  const handleImageLoad = (event) => {
     const { width: imgWidth, height: imgHeight } = event.nativeEvent.source;
     setImageDimensions({ width: imgWidth, height: imgHeight });
   };
@@ -59,6 +60,7 @@ const OnboardingScreen = () => {
         ]}
       />
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+          <Ionicons name="log-in-outline" size={24} color="white" style={styles.icon} />
         <Text style={styles.buttonText}>Go to Login</Text>
       </TouchableOpacity>
     </View>
@@ -75,7 +77,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e3f4',
   },
   img: {
-    // marginTop: -330,
     borderRadius: 100,
     marginHorizontal: 10,
     height: 100,
@@ -100,11 +101,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
+    flexDirection: 'row', // align icon and text
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginLeft: 8,
+  },
+    icon: {
+    marginRight: 5,
   },
 });

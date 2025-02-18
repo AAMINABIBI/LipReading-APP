@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
 
 const SignupScreen = ({ navigation }) => {
   const [fullName, setFullName] = useState('');
@@ -21,7 +22,6 @@ const SignupScreen = ({ navigation }) => {
       const storedUsers = await AsyncStorage.getItem('users');
       const users = storedUsers ? JSON.parse(storedUsers) : [];
 
-      // Check if email already exists
       const existingUser = users.find(user => user.email === email);
       if (existingUser) {
         Alert.alert("Error", "Email already exists. Please login.");
@@ -32,14 +32,14 @@ const SignupScreen = ({ navigation }) => {
       const newUser = {
         fullName,
         email,
-        password, // In a real app, hash the password!
+        password,
       };
 
       users.push(newUser);
       await AsyncStorage.setItem('users', JSON.stringify(users));
 
       Alert.alert("Success", "Signup successful. Please login.");
-      navigation.navigate('Login'); // Navigate to Login screen
+      navigation.navigate('Login');
     } catch (error) {
       console.error("Signup error:", error);
       Alert.alert("Error", "An error occurred during signup.");
@@ -56,30 +56,41 @@ const SignupScreen = ({ navigation }) => {
       <View style={styles.content}>
         <Text style={styles.largeTitle}>Sign Up</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Full Name"
-          placeholderTextColor="#aaa"
-          onChangeText={setFullName}
-          value={fullName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          placeholderTextColor="#aaa"
-          onChangeText={setEmail}
-          value={email}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          placeholderTextColor="#aaa"
-          onChangeText={setPassword}
-          value={password}
-          secureTextEntry
-        />
+        <View style={styles.inputContainer}>
+          <Ionicons name="person-outline" size={24} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Full Name"
+            placeholderTextColor="#aaa"
+            onChangeText={setFullName}
+            value={fullName}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="mail-outline" size={24} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            placeholderTextColor="#aaa"
+            onChangeText={setEmail}
+            value={email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Ionicons name="lock-closed-outline" size={24} color="#aaa" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#aaa"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry
+          />
+        </View>
 
         <TouchableOpacity style={styles.button} onPress={handleSignup} disabled={loading}>
           <Text style={styles.buttonText}>{loading ? 'Signing up...' : 'Sign Up'}</Text>
@@ -87,7 +98,7 @@ const SignupScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={styles.link}
-          onPress={() => navigation.navigate('Login')} // Navigate to Login screen
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.linkText}>Already have an account? Login</Text>
         </TouchableOpacity>
@@ -118,14 +129,28 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   input: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+    paddingVertical: 15,
+    paddingRight:15,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    fontSize: 13,
+  },
+    inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     width: '100%',
     backgroundColor: '#f0f0f0',
-    padding: 15,
     marginBottom: 15,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
-    fontSize:20
+  },
+    icon: {
+    paddingLeft: 15,
+    paddingRight: 10,
   },
   button: {
     backgroundColor: '#b297eb',
