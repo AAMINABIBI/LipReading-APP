@@ -23,6 +23,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "react-native-video",
+      "expo-font",
+      "expo-video"
+    ]
   }
 }

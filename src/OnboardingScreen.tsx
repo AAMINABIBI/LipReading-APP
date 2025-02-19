@@ -1,37 +1,33 @@
-import { StyleSheet, Text, View, Image, Dimensions, TouchableOpacity } from 'react-native';
-import React, { useState, useRef, useEffect } from 'react';
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
+//import React from 'react';
 import Onboarding from 'react-native-onboarding-swiper';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { useVideoPlayer, VideoView } from 'expo-video';
+import React, { useCallback } from 'react';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const OnboardingScreen = () => {
   const navigation = useNavigation();
-  const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
-  const [containerWidth, setContainerWidth] = useState(screenWidth);
-  const imageRef = useRef(null);
 
-  useEffect(() => {
-    if (imageRef.current) {
-      imageRef.current.measure((x, y, width) => {
-        setContainerWidth(width);
-      });
-    }
-  }, []);
+  const videoSource = require('../assets/VisioVox.mp4');
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = true;
+  });
 
-  const handleImageLoad = (event) => {
-    const { width: imgWidth, height: imgHeight } = event.nativeEvent.source;
-    setImageDimensions({ width: imgWidth, height: imgHeight });
-  };
-
-  const calculateImageHeight = () => {
-    if (imageDimensions.width === 0 || imageDimensions.height === 0 || containerWidth === 0) {
-      return 0;
-    }
-    const aspectRatio = imageDimensions.height / imageDimensions.width;
-    return containerWidth * aspectRatio;
-  };
+  useFocusEffect(
+    useCallback(() => {
+      if (player) {
+        player.play();
+      }
+      return () => {
+        if(player){
+          player.pause();
+        }
+      };
+    }, [player])
+  );
 
   return (
     <View style={styles.container}>
@@ -39,71 +35,80 @@ const OnboardingScreen = () => {
         showPagination={false}
         pages={[
           {
-            backgroundColor: '#e0e3f4',
+            backgroundColor: '#4d1d60',
             image: (
-              <Image
-                ref={imageRef}
-                style={[styles.img, { height: calculateImageHeight(), width: containerWidth }]}
-                source={require('../assets/download5.png')}
-                resizeMode="contain"
-                onLoad={handleImageLoad}
-              />
+              <View style={styles.videoContainer}>
+                <VideoView style={styles.video} player={player} />
+              </View>
             ),
-            title: <Text style={styles.title}>VisioVox</Text>,
-            subtitle: (
-              <Text style={styles.subtitle}>
-                See What They Say: {'\n'}
-                Lip Reading for Enhanced Understanding.
+            title: "",
+            subtitle: "",
+          },
+          {
+            backgroundColor: '#e0e3f4',
+            title: (
+              <Text style={styles.title}>
+                VisioVox
               </Text>
             ),
+            subtitle: (
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+                  <Ionicons name="log-in-outline" size={24} color="white" style={styles.icon} />
+                  <Text style={styles.buttonText}>Go to Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp')}>
+                  <Ionicons name="person-add-outline" size={24} color="white" style={styles.icon} />
+                  <Text style={styles.buttonText}>Go to Signup</Text>
+                </TouchableOpacity>
+              </View>
+            ),
+            image: (<View />)
           },
         ]}
       />
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
-          <Ionicons name="log-in-outline" size={24} color="white" style={styles.icon} />
-        <Text style={styles.buttonText}>Go to Login</Text>
-      </TouchableOpacity>
     </View>
   );
 };
 
 export default OnboardingScreen;
 
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#e0e3f4',
-  },
-  img: {
-    borderRadius: 100,
-    marginHorizontal: 10,
-    height: 100,
-    width: 100,
-    margin: 30,
+    backgroundColor: "#4d1d60"
   },
   title: {
-    fontSize: 25,
-    fontWeight: 'bold',
+    fontSize: 68,
+    color: '#9400D3',
+    textShadowColor: 'rgba(148, 0, 211, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 20,
   },
   subtitle: {
     fontSize: 15,
     textAlign: 'center',
     marginHorizontal: 20,
+    color: 'black',
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
   button: {
-    position: 'absolute',
-    bottom: 50,
     backgroundColor: 'purple',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    flexDirection: 'row', // align icon and text
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 10,
   },
   buttonText: {
     color: '#fff',
@@ -112,7 +117,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginLeft: 8,
   },
-    icon: {
+  icon: {
     marginRight: 5,
+  },
+  videoContainer: {
+    width: screenWidth,
+    height: screenHeight * 0.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#4d1d60"
+  },
+  video: {
+    width: '100%',
+    height: '100%',
   },
 });

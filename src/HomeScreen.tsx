@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Modal, ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import { Ionicons } from '@expo/vector-icons';
 
 const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -17,18 +17,15 @@ const HomeScreen = () => {
         "Video Already Selected",
         "A video is already selected. Do you want to choose another?",
         [
-          {
-            text: "Cancel",
-            style: "cancel"
-          },
+          { text: "Cancel", style: "cancel" },
           {
             text: "Choose Another",
             onPress: () => {
               setSelectedVideo(null);
               setConversionType(type);
               setModalVisible(true);
-            }
-          }
+            },
+          },
         ]
       );
     } else {
@@ -101,19 +98,21 @@ const HomeScreen = () => {
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Video Source</Text>
-            <TouchableOpacity style={styles.button} onPress={handleSelectFromGallery}>
-              <Ionicons name="image-outline" size={24} color="white" style={styles.icon} />
-              <Text style={styles.buttonText}>Gallery</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSelectFromCamera}>
-              <Ionicons name="camera-outline" size={24} color="white" style={styles.icon} />
-              <Text style={styles.buttonText}>Camera</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
-              <Ionicons name="close-outline" size={24} color="white" style={styles.icon} />
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Select Video Source!</Text>
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity style={styles.modalButton} onPress={handleSelectFromGallery}>
+                <Ionicons name="image-outline" size={24} color="white" />
+                <Text style={styles.modalButtonText}>Gallery</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={handleSelectFromCamera}>
+                <Ionicons name="camera-outline" size={24} color="white" />
+                <Text style={styles.modalButtonText}>Camera</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+                <Ionicons name="close-outline" size={24} color="white" />
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -147,13 +146,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     margin: 10,
-    flexDirection: 'row', // Add flexDirection to align icon and text
+    flexDirection: 'row',
   },
   buttonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
-    marginLeft: 8, // Add marginLeft for spacing between icon and text
+    marginLeft: 8,
   },
   largeTitle: {
     fontSize: 36,
@@ -171,13 +170,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: '90%',
     margin: 10,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
     textAlign: 'center',
   },
   loadingContainer: {
@@ -191,7 +190,28 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
   icon: {
-    marginRight: 5, // Add marginRight for spacing between icon and text
+    marginRight: 5,
+  },
+  modalButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+  },
+  modalButton: {
+    backgroundColor: '#b297eb',
+    padding: 15,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 80,
+    height: 80,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center'
   },
 });
 
