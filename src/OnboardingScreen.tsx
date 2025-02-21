@@ -1,5 +1,6 @@
+// 
+
 import { StyleSheet, Text, View, Dimensions, TouchableOpacity } from 'react-native';
-//import React from 'react';
 import Onboarding from 'react-native-onboarding-swiper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -22,7 +23,7 @@ const OnboardingScreen = () => {
         player.play();
       }
       return () => {
-        if(player){
+        if (player) {
           player.pause();
         }
       };
@@ -39,6 +40,12 @@ const OnboardingScreen = () => {
             image: (
               <View style={styles.videoContainer}>
                 <VideoView style={styles.video} player={player} />
+                <TouchableOpacity 
+                  style={styles.swipeButton} 
+                  onPress={() => { /* Handle swipe or navigation here */ }}
+                >
+                  <Text style={styles.swipeButtonText}>Swipe to Next....</Text>
+                </TouchableOpacity>
               </View>
             ),
             title: "",
@@ -72,8 +79,6 @@ const OnboardingScreen = () => {
 };
 
 export default OnboardingScreen;
-
-
 
 const styles = StyleSheet.create({
   container: {
@@ -130,5 +135,19 @@ const styles = StyleSheet.create({
   video: {
     width: '100%',
     height: '100%',
+  },
+ 
+  swipeButton: {
+    backgroundColor: 'rgba(0,0,0,0.2)', // Semi-transparent black
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    opacity:0.7,
+   top:100, // Space below video
+    alignSelf: 'center', // Center the button
+  },
+  swipeButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
